@@ -196,3 +196,56 @@ body, html {
     width: 90%;
   }
 }
+
+/* 16:10 저해상도(예: 800x480) 전용 튜닝 */
+@media (aspect-ratio: 16/10) and (max-height: 520px) {
+
+  /* 전체 간격 줄이기 */
+  .main-content {
+    gap: clamp(8px, 2vh, 16px);
+    height: 92%;
+    width: 96%;
+  }
+
+  /* 왼쪽 시계가 공간을 덜 먹게: "짧은 변" 기준으로 더 줄임 */
+  .clock-section {
+    flex: 0 0 auto; /* 고정폭 강제 대신 내용 기반 */
+  }
+
+  .analog-clock {
+    width: min(52vh, 32vw);   /* ★ 핵심: 42vw → 32vw로 강하게 제한 */
+    height: min(52vh, 32vw);
+    margin-left: 1vh;
+  }
+
+  /* 우측 패널이 답답해지는 걸 막기 위해 최소폭 완화 + 여백 감소 */
+  .info-panel {
+    min-width: 0;             /* clamp로 가로를 잠그지 않음 */
+    margin-left: 2vh;
+    margin-right: 1vh;
+    gap: clamp(8px, 1.6vh, 14px);
+    padding-block: clamp(6px, 1.2vh, 14px);
+    transform: translateY(0); /* 필요시 미세조정용 */
+  }
+
+  /* 카드 패딩을 vh에서 px 혼합으로: 저해상도에서 과/부족 방지 */
+  .card {
+    padding: clamp(10px, 2vh, 16px) clamp(14px, 2.6vh, 22px);
+    border-radius: 16px;
+  }
+
+  /* 디지털 시간: "너무 커서 답답"만 제거. hh:mm 체감 크기는 유지 */
+  .digital-time {
+    font-size: clamp(56px, 16vh, 120px); /* 26vh → 16vh로 축소, px 하한으로 가독성 보장 */
+    line-height: 0.9;
+  }
+
+  .date-display {
+    font-size: clamp(22px, 6vh, 42px);
+  }
+
+  /* 날씨/주식 글자도 저해상도에서 과대해 보일 수 있어 상한을 낮춤 */
+  .weather-card { font-size: clamp(12px, 2.2vh, 16px); }
+  .stock-card   { font-size: clamp(12px, 2.2vh, 16px); }
+  .current-temp { font-size: clamp(22px, 5vh, 34px); }
+}
