@@ -15,7 +15,7 @@ const ImagineView = () => {
   // 날씨 가져오기 함수
   const fetchWeather = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:9901/api/weather');
+      const response = await fetch('/api/weather');
       const data = await response.json();
       if (!data.error) setWeather(data);
     } catch (error) {
@@ -89,7 +89,7 @@ const ImagineView = () => {
     }
 
     const finalCode = tenDigit + oneDigit;
-    return `back${finalCode.toString().padStart(2, '0')}.png`;
+    return `back${finalCode.toString().padStart(2, '0')}.webp`;
   };
 
   const bgFileName = getBackgroundFileName(time);
