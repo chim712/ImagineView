@@ -35,21 +35,24 @@ body, html {
   gap: 4vh; /* 해상도 비례 간격 */
 }
 
-/* 시계 스타일: 상하 해상도의 80% 고정 */
+/* 1) 시계 섹션이 가로를 과점유하지 않도록: vh + vw 동시 제한 */
 .clock-section {
-  /* 시계가 원형을 유지하며 80vh를 차지하도록 설정 */
-  flex: 0 0 80vh; 
+  /* 기존: flex: 0 0 80vh; */
+  flex: 0 0 clamp(52vh, 60vh, 68vh); /* 세로 기준 기본 크기 감소 */
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* 2) 실제 시계 크기: 16:10에서 가로 제한(vw) 걸기 */
 .analog-clock {
-  width: 80vh; 
-  height: 80vh;
-  /* 기존 max-width 제약 해제 */
+  /* 기존: width: 80vh; height: 80vh; */
+  width: min(68vh, 42vw);  /* ★ 여기서 42vw가 16:10 압축을 막아줌 */
+  height: min(68vh, 42vw);
+  aspect-ratio: 1 / 1;
+
   filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
-  margin-left: 5vh;
+  margin-left: 3vh; /* 기존 5vh → 약간 축소(가로 여유 확보) */
 }
 
 .clock-face { fill: rgba(15, 15, 15, 0.4); }
@@ -62,14 +65,26 @@ body, html {
 
 /* 우측 패널: 남은 공간 활용 */
 .info-panel {
-  flex: 1;
   display: flex;
   flex-direction: column;
+
+  flex: 1 1 0;
+  min-width: clamp(340px, 34vw, 520px);
+  margin-left: 3vh;
+  margin-right: 2vh;
+
+  height: 90%;
+
+  /* 세로 스택 가운데 정렬 */
   justify-content: center;
-  gap: 2.5vh; /* 카드 간격도 해상도 비례 */
-  min-width: 300px; /* 최소 가독성 확보 */
-  margin-left: 5vh;
-  margin-right: 3vh;
+
+  /* 가로 정렬은 기존처럼 카드 폭 유지 목적이면 그대로 */
+  align-items: stretch;
+
+  gap: clamp(12px, 2.2vh, 28px);
+
+  /* 패딩은 너무 크면 중앙이 살짝 내려가 보일 수 있어 clamp로 안정화 */
+  padding-block: clamp(8px, 1.5vh, 20px);
 }
 
 .card {
@@ -79,10 +94,19 @@ body, html {
   padding: 2.5vh 4vh; /* 패딩 수식화 */
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   border: 1px solid rgba(255, 255, 255, 0.1); /* 카드 경계선 추가 */
+
+  flex: 0 0 auto;
+  min-height: fit-content;
+
+  padding: clamp(12px, 2.2vh, 24px) clamp(16px, 3vh, 36px);
 }
 
 /* 개별 카드 디테일 */
-.time-card { text-align: right; }
+.time-card { 
+  text-align: right;
+  overflow: hidden;
+}
+
 .date-display { 
   font-size: clamp(2rem, 8vh, 6rem); /* 해상도 대응 폰트 수식 */
   text-shadow: 0.1vw 0.2vw 0.2vw rgba(0,0,0,0.75);
@@ -91,7 +115,7 @@ body, html {
 }
 .digital-time { 
   font-size: clamp(4rem, 28vh, 18rem); /* 시계 크기에 맞춘 디지털 시간 크기 */
-  line-height: 0.9; 
+  line-height: 0.85; 
   font-weight: 900; 
   text-shadow: 0.3vw 0.4vw 0.5vw rgba(0,0,0,0.75);
   color: #eee; 
