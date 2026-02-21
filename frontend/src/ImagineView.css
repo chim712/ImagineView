@@ -1,0 +1,174 @@
+/* ImagineView.css */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* 스크롤바 절대 금지 */
+  font-family: 'Times New Roman', serif;
+}
+
+.dashboard-wrapper {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #222;
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-content {
+  display: flex;
+  width: 95%; /* 좌우 여백 살짝 최적화 */
+  height: 90%; /* 상하 여백 최적화 */
+  align-items: center;
+  justify-content: center; /* 중앙 정렬 */
+  gap: 4vh; /* 해상도 비례 간격 */
+}
+
+/* 시계 스타일: 상하 해상도의 80% 고정 */
+.clock-section {
+  /* 시계가 원형을 유지하며 80vh를 차지하도록 설정 */
+  flex: 0 0 80vh; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.analog-clock {
+  width: 80vh; 
+  height: 80vh;
+  /* 기존 max-width 제약 해제 */
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+  margin-left: 5vh;
+}
+
+.clock-face { fill: rgba(15, 15, 15, 0.4); }
+.tick-mark { stroke: #aaa; stroke-width: 1.5; }
+.hand { stroke: #f0f0f0; stroke-linecap: butt; }
+.hour-hand { stroke-width: 1.5; } /* 크기가 커진 만큼 두께 보정 */
+.minute-hand { stroke-width: 1.0; }
+.second-hand { stroke: #eea020; stroke-width: 0.5; }
+.center-dot { fill: #ccc; }
+
+/* 우측 패널: 남은 공간 활용 */
+.info-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2.5vh; /* 카드 간격도 해상도 비례 */
+  min-width: 300px; /* 최소 가독성 확보 */
+  margin-left: 5vh;
+  margin-right: 3vh;
+}
+
+.card {
+  background: rgba(15, 15, 15, 0.3);
+  backdrop-filter: blur(6px); /* 블러 강도 상향하여 가독성 확보 */
+  border-radius: 20px;
+  padding: 2.5vh 4vh; /* 패딩 수식화 */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1); /* 카드 경계선 추가 */
+}
+
+/* 개별 카드 디테일 */
+.time-card { text-align: right; }
+.date-display { 
+  font-size: clamp(2rem, 8vh, 6rem); /* 해상도 대응 폰트 수식 */
+  text-shadow: 0.1vw 0.2vw 0.2vw rgba(0,0,0,0.75);
+  color: #eee; 
+  margin-bottom: 0.5vh; 
+}
+.digital-time { 
+  font-size: clamp(4rem, 28vh, 18rem); /* 시계 크기에 맞춘 디지털 시간 크기 */
+  line-height: 0.9; 
+  font-weight: 900; 
+  text-shadow: 0.3vw 0.4vw 0.5vw rgba(0,0,0,0.75);
+  color: #eee; 
+}
+
+.weather-card { 
+  font-size: clamp(1rem, 2.2vh, 1.8rem); 
+  font-weight: 500;  
+  color: #eee; 
+}
+.location-pin { display: block; font-weight: bold; margin-bottom: 0.8vh; }
+
+.weather-card.updated-layout {
+  display: flex;
+  justify-content: space-between; /* 좌우 끝으로 배치 */
+  align-items: center;
+  padding: 20px;
+}
+
+.weather-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.location-row {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.sub-info-row {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.weather-right {
+  display: flex;
+  align-items: center;
+}
+
+.current-temp {
+  font-size: 2.8rem; /* 크게 강조 */
+  font-weight: 700;
+  line-height: 1;
+}
+
+
+
+.stock-card { 
+  font-size: clamp(1.2rem, 2.5vh, 2rem); 
+  color: #eee; 
+}
+.stock-item { display: flex; justify-content: space-between; margin: 0.8vh 0; color: #eee; }
+.up { color: #e74c3c; font-weight: bold; }
+
+/* 폰트 적용 */
+.weather-card,
+.stock-card {
+  font-family: 'Pretendard', sans-serif;
+  letter-spacing: -0.3px;
+}
+
+/* 태블릿/모바일 대응 (세로 모드) */
+@media (max-aspect-ratio: 1/1) {
+  .main-content {
+    flex-direction: column;
+    height: auto;
+  }
+  .clock-section {
+    flex: 0 0 50vh;
+  }
+  .analog-clock {
+    width: 50vh;
+    height: 50vh;
+  }
+  .info-panel {
+    width: 90%;
+  }
+}

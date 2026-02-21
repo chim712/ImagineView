@@ -1,0 +1,15 @@
+/* 화면 밀림 방지를 위한 초기화 */
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: none !important;
+  text-align: left !important;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
