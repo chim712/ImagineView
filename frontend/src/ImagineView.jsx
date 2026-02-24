@@ -145,7 +145,7 @@ const ImagineView = () => {
                   <span className="location-pin">📍 충청남도 아산시</span>
                 </div>
                 <div className="sub-info-row">
-                  최저 {weather.min_temp}°c 최고 {weather.max_temp}°c · 미세먼지 {weather.dust}
+                  {weather.min_temp}°c ~ {weather.max_temp}°c  ·  미세먼지 {weather.dust}
                 </div>
               </div>
               <div className="weather-right">

@@ -1,4 +1,7 @@
 /* ImagineView.css */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap');
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body, html {
@@ -28,31 +31,30 @@ body, html {
 
 .main-content {
   display: flex;
-  width: 95%; /* 좌우 여백 살짝 최적화 */
-  height: 90%; /* 상하 여백 최적화 */
+  width: 92%; /* 좌우 여백 살짝 최적화 */
+  height: 85%; /* 상하 여백 최적화 */
   align-items: center;
-  justify-content: center; /* 중앙 정렬 */
-  gap: 4vh; /* 해상도 비례 간격 */
+  justify-content: space-between; /* 중앙 정렬 */
+  gap: 0vh; /* 해상도 비례 간격 */
 }
 
 /* 1) 시계 섹션이 가로를 과점유하지 않도록: vh + vw 동시 제한 */
 .clock-section {
   /* 기존: flex: 0 0 80vh; */
-  flex: 0 0 clamp(52vh, 60vh, 68vh); /* 세로 기준 기본 크기 감소 */
+  flex: 0 0 auto; /* 세로 기준 기본 크기 감소 */
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  padding-left: 2vw;
 }
 
 /* 2) 실제 시계 크기: 16:10에서 가로 제한(vw) 걸기 */
 .analog-clock {
   /* 기존: width: 80vh; height: 80vh; */
-  width: min(68vh, 42vw);  /* ★ 여기서 42vw가 16:10 압축을 막아줌 */
-  height: min(68vh, 42vw);
+  width: min(74vh, 47vw);  /* ★ 여기서 42vw가 16:10 압축을 막아줌 */
+  height: min(74vh, 47vw);
   aspect-ratio: 1 / 1;
 
-  filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
-  margin-left: 3vh; /* 기존 5vh → 약간 축소(가로 여유 확보) */
+  filter: drop-shadow(0 0 20px rgba(0,0,0,0.3));
 }
 
 .clock-face { fill: rgba(15, 15, 15, 0.4); }
@@ -65,11 +67,10 @@ body, html {
 
 /* 우측 패널: 남은 공간 활용 */
 .info-panel {
+  flex: 0 0 32vw;
   display: flex;
   flex-direction: column;
 
-  flex: 1 1 0;
-  min-width: clamp(340px, 34vw, 520px);
   margin-left: 3vh;
   margin-right: 2vh;
 
@@ -79,19 +80,20 @@ body, html {
   justify-content: center;
 
   /* 가로 정렬은 기존처럼 카드 폭 유지 목적이면 그대로 */
-  align-items: stretch;
+  align-items: flex-end;
 
-  gap: clamp(12px, 2.2vh, 28px);
+  gap: 2vh;
 
   /* 패딩은 너무 크면 중앙이 살짝 내려가 보일 수 있어 clamp로 안정화 */
   padding-block: clamp(8px, 1.5vh, 20px);
 }
 
 .card {
-  background: rgba(15, 15, 15, 0.3);
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(6px); /* 블러 강도 상향하여 가독성 확보 */
   border-radius: 20px;
-  padding: 2.5vh 4vh; /* 패딩 수식화 */
+  padding: 2vh 2vw !important; /* 패딩 수식화 */
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   border: 1px solid rgba(255, 255, 255, 0.1); /* 카드 경계선 추가 */
 
@@ -108,17 +110,20 @@ body, html {
 }
 
 .date-display { 
-  font-size: clamp(2rem, 8vh, 6rem); /* 해상도 대응 폰트 수식 */
-  text-shadow: 0.1vw 0.2vw 0.2vw rgba(0,0,0,0.75);
-  color: #eee; 
-  margin-bottom: 0.5vh; 
+  font-family: 'Gowun Batang', serif;
+  font-size: clamp(1.2rem, 5vh, 2.5rem); /* 해상도 대응 폰트 수식 */
+  text-shadow: 0.1vw 0.1vw 0.2vw rgba(0,0,0,0.5);
+  color: rgba(238, 238, 238, 0.9); 
+  margin-bottom: 1vh; 
 }
 .digital-time { 
-  font-size: clamp(4rem, 28vh, 18rem); /* 시계 크기에 맞춘 디지털 시간 크기 */
-  line-height: 0.85; 
-  font-weight: 900; 
-  text-shadow: 0.3vw 0.4vw 0.5vw rgba(0,0,0,0.75);
-  color: #eee; 
+  font-family: 'Gowun Batang', serif;
+  font-size: clamp(3.5rem, 22vh, 14rem); /* 시계 크기에 맞춘 디지털 시간 크기 */
+  line-height: 1.0; 
+  font-weight: 700; 
+  text-shadow: 0.2vw 0.3vw 0.5vw rgba(0,0,0,0.6);
+  color: #fff; 
+  letter-spacing: -0.02em;
 }
 
 .weather-card { 
@@ -143,35 +148,40 @@ body, html {
 }
 
 .location-row {
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-size: clamp(0.9rem, 2.2vh, 1.8rem);
+  font-weight: 700;
+  color: #fff;
   text-shadow: 0.1vw 0.1vw 0.4vw rgba(0,0,0,0.75);
 }
 
 .sub-info-row {
-  font-size: 1.1rem;
+  font-size: clamp(0.7rem, 1.8vh, 1.4rem);
   opacity: 0.8;
+  color: rgba(238, 238, 238, 0.8);
   text-shadow: 0.1vw 0.2vw 0.3vw rgba(0,0,0,0.75);
+  letter-spacing: -0.01em;
 }
 
 .weather-right {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: flex-end;
-  gap: 20px;
+  gap: 2.5vw;
 }
 
 .condition-text {
-  font-size: 2rem; /* 온도보다는 작게 */
+  font-size: clamp(1.5rem, 5.5vh, 3.5rem); /* 온도보다는 작게 */
   font-weight: 600;
   letter-spacing: -1px;
-  text-shadow: 0.15vw 0.2vw 0.3vw rgba(0,0,0,0.75);
+  text-shadow: 0.15vw 0.2vw 0.3vw rgba(0,0,0,0.5);
 }
 
 .current-temp {
-  font-size: 3.6rem;
-  font-weight: 700;
-  text-shadow: 0.15vw 0.2vw 0.3vw rgba(0,0,0,0.75);
+  font-family: 'Gowun Batang', serif;
+  font-size: clamp(2.5rem, 9vh, 7rem);
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0.2vw 0.2vw 0.4vw rgba(0,0,0,0.5);
   line-height: 1;
   /* 숫자와 'c'가 붙어있을 때 가독성을 위해 자간 조정 */
   letter-spacing: -2px;
