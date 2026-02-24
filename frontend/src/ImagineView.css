@@ -132,7 +132,7 @@ body, html {
   display: flex;
   justify-content: space-between; /* 좌우 끝으로 배치 */
   align-items: center;
-  padding: 20px;
+  padding: 15px 25px;
 }
 
 .weather-left {
@@ -143,24 +143,38 @@ body, html {
 }
 
 .location-row {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 600;
+  text-shadow: 0.1vw 0.1vw 0.4vw rgba(0,0,0,0.75);
 }
 
 .sub-info-row {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   opacity: 0.8;
+  text-shadow: 0.1vw 0.2vw 0.3vw rgba(0,0,0,0.75);
 }
 
 .weather-right {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.condition-text {
+  font-size: 2rem; /* 온도보다는 작게 */
+  font-weight: 600;
+  letter-spacing: -1px;
+  text-shadow: 0.15vw 0.2vw 0.3vw rgba(0,0,0,0.75);
 }
 
 .current-temp {
-  font-size: 2.8rem; /* 크게 강조 */
+  font-size: 3.6rem;
   font-weight: 700;
+  text-shadow: 0.15vw 0.2vw 0.3vw rgba(0,0,0,0.75);
   line-height: 1;
+  /* 숫자와 'c'가 붙어있을 때 가독성을 위해 자간 조정 */
+  letter-spacing: -2px;
 }
 
 

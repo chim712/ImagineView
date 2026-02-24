@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import PlainTextResponse
+
 from .service.weather import WeatherService
 
 from fastapi.staticfiles import StaticFiles
@@ -26,6 +28,11 @@ weather_service = WeatherService(WEATHER_KEY)
 async def read_weather():
     # 충청남도 아산시 격자 좌표 (nx=60, ny=110)
     return weather_service.get_weather(nx=60, ny=110)
+
+@app.get("/api/weather/debug", response_class=PlainTextResponse)
+async def debug_weather():
+    """사람이 읽기 좋은 형태로 기상청 Raw 데이터를 출력"""
+    return weather_service.get_debug_text(nx=60, ny=110)
 
 
 

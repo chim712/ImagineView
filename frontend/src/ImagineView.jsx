@@ -12,7 +12,9 @@ const ImagineView = () => {
     sky_condition: 'CLEAR'
   });
 
-  // 날씨 가져오기 함수
+  // 실제로 화면에 보여줄 배경화면 상태 (기본값 설정)
+  const [activeBg, setActiveBg] = useState('back02.webp');
+
   const fetchWeather = async () => {
     try {
       const response = await fetch('/api/weather');
@@ -24,23 +26,21 @@ const ImagineView = () => {
   };
 
   useEffect(() => {
-    fetchWeather(); // 첫 로드 시 실행
-
+    fetchWeather();
     const timer = setInterval(() => {
       const now = new Date();
       setTime(now);
-
-      // 매 정각(0분 0초)에 날씨 정보 갱신
       if (now.getMinutes() === 0 && now.getSeconds() === 0) {
         fetchWeather();
       }
-    }, 1000);return () => clearInterval(timer);
+    }, 1000);
+    return () => clearInterval(timer);
   }, []);
 
   /**
    * 배경 파일명을 결정하는 로직
    */
-  const getBackgroundFileName = (now) => {
+  const getBackgroundFileName = (now, weatherStatus) => {
     const month = now.getMonth() + 1;
     const day = now.getDate();
     const hour = now.getHours();
@@ -48,52 +48,52 @@ const ImagineView = () => {
     const dateVal = month * 100 + day; 
     const nowMin = hour * 60 + minute;
 
-    // TODO: 백엔드 API 연동 시 실제 weather 값을 대입 (현재는 'CLEAR' 고정)
-    const weather = 'CLEAR'; 
-
-    // 1. 10의 자리 (계절 및 날씨 코드)
-    let tenDigit = 0; // 기본: 여름/맑음
-
-    if (weather === 'SNOW') {
-      tenDigit = 50;
-    } else if (weather === 'RAIN') {
-      tenDigit = (dateVal >= 1216 || dateVal <= 319) ? 70 : 30;
-    } else if (weather === 'CLOUDY') {
-      tenDigit = 10;
+    let tenDigit = 0; 
+    if (weatherStatus === 'RAIN' || weatherStatus === 'SNOW' || weatherStatus === 'CLOUDY' || weatherStatus === 'OVERCAST') {
+      if (weatherStatus === 'SNOW') tenDigit = 50;
+      else if (weatherStatus === 'RAIN') tenDigit = (dateVal >= 1216 || dateVal <= 319) ? 70 : 30;
+      else tenDigit = 30; 
     } else {
-      // 맑은 날 기준 특수 풍경
-      if (dateVal >= 320 && dateVal <= 420) tenDigit = 20;       // 벚꽃 (3/20~4/20)
-      else if (dateVal >= 1101 && dateVal <= 1215) tenDigit = 40; // 단풍 (11/1~12/15)
-      else if (dateVal >= 1216 || dateVal <= 319) tenDigit = 60;  // 겨울 (12/16~3/19)
+      if (dateVal >= 320 && dateVal <= 420) tenDigit = 20; 
+      else if (dateVal >= 1101 && dateVal <= 1215) tenDigit = 40; 
+      else if (dateVal >= 1216 || dateVal <= 319) tenDigit = 60; 
+      else tenDigit = 0; 
     }
 
-    // 2. 계절별 일출(sr), 일몰(ss) 기준 시각 설정 (분 단위)
     let srMin, ssMin;
-    if (month >= 3 && month <= 5) { srMin = 390; ssMin = 1110; }      // 봄 (06:30, 18:30)
-    else if (month >= 6 && month <= 8) { srMin = 330; ssMin = 1200; } // 여름 (05:30, 20:00)
-    else if (month >= 9 && month <= 11) { srMin = 420; ssMin = 1080; }// 가을 (07:00, 18:00)
-    else { srMin = 450; ssMin = 1050; }                               // 겨울 (07:30, 17:30)
+    if (month >= 3 && month <= 5) { srMin = 390; ssMin = 1110; }
+    else if (month >= 6 && month <= 8) { srMin = 330; ssMin = 1200; }
+    else if (month >= 9 && month <= 11) { srMin = 420; ssMin = 1080; }
+    else { srMin = 450; ssMin = 1050; }
 
-    // 3. 1의 자리 (시간 단계 코드)
-    let oneDigit = 5; // 기본: 밤
-    if (nowMin >= srMin && nowMin < srMin + 120) {
-      oneDigit = 1; // 일출 후 2시간
-    } else if (nowMin >= srMin + 120 && nowMin < ssMin - 90) {
-      oneDigit = 2; // 낮 (일출 2시간 후 ~ 일몰 1.5시간 전)
-    } else if (nowMin >= ssMin - 90 && nowMin < ssMin) {
-      oneDigit = 3; // 일몰 전 (일몰 1.5시간 전 ~ 일몰)
-    } else if (nowMin >= ssMin && nowMin < ssMin + 90) {
-      oneDigit = 4; // 저녁 (일몰 ~ 일몰 1.5시간 후)
-    } else {
-      oneDigit = 5; // 밤 (그 외)
-    }
+    let oneDigit = 5; 
+    if (nowMin >= srMin && nowMin < srMin + 120) oneDigit = 1;
+    else if (nowMin >= srMin + 120 && nowMin < ssMin - 90) oneDigit = 2;
+    else if (nowMin >= ssMin - 90 && nowMin < ssMin) oneDigit = 3;
+    else if (nowMin >= ssMin && nowMin < ssMin + 90) oneDigit = 4;
+    else oneDigit = 5;
 
     const finalCode = tenDigit + oneDigit;
     return `back${finalCode.toString().padStart(2, '0')}.webp`;
   };
 
-  const bgFileName = getBackgroundFileName(time);
-  const bgPath = `/assets/backgrounds/${bgFileName}`;
+  // 배경화면 체크 및 폴백 로직 통합
+  useEffect(() => {
+    const targetBg = getBackgroundFileName(time, weather.sky_condition);
+    const img = new Image();
+    img.src = `/assets/backgrounds/${targetBg}`;
+
+    img.onload = () => setActiveBg(targetBg);
+    img.onerror = () => {
+      // backXX.webp 에서 마지막 숫자인 'X'를 추출 (인덱스 5)
+      const timePhase = targetBg.charAt(5); 
+      const fallbackBg = `back0${timePhase}.webp`;
+      setActiveBg(fallbackBg);
+    };
+  }, [time.getMinutes(), weather.sky_condition]);
+
+  // 최종 경로는 activeBg를 사용합니다.
+  const bgPath = `/assets/backgrounds/${activeBg}`;
 
   // 시계 수식
   const seconds = time.getSeconds();
@@ -103,20 +103,25 @@ const ImagineView = () => {
   const minDeg = ((minutes + seconds / 60) / 60) * 360;
   const hourDeg = ((hours % 12 + minutes / 60) / 12) * 360;
 
+  const conditionMap = {
+    'CLEAR': '맑음', 'CLOUDY': '구름많음', 'OVERCAST': '흐림',
+    'RAIN': '비', 'SNOW': '눈', 'SLEET': '비/눈'
+  };
+
   return (
     <div 
       className="dashboard-wrapper" 
       style={{ 
-        backgroundImage: `url(${bgPath})`,
-        transition: 'background-image 1.5s ease-in-out' // 배경 전환 효과
+        backgroundImage: `url("${bgPath}")`, // 큰따옴표 추가로 안정성 확보
+        transition: 'background-image 1.5s ease-in-out'
       }}
     >
       <div className="overlay">
         <main className="main-content">
+          {/* 시계 섹션 */}
           <section className="clock-section">
             <svg viewBox="0 0 100 100" className="analog-clock">
               <circle cx="50" cy="50" r="48" className="clock-face" />
-              {/* 기존 눈금 유지 */}
               {[...Array(12)].map((_, i) => (
                 <line key={i} x1="50" y1="6" x2="50" y2="12" transform={`rotate(${i * 30} 50 50)`} className="tick-mark" />
               ))}
@@ -127,30 +132,28 @@ const ImagineView = () => {
             </svg>
           </section>
 
+          {/* 정보 패널 */}
           <section className="info-panel">
             <div className="card time-card">
               <p className="date-display">{time.toLocaleDateString('ko-KR')} {time.toLocaleDateString('en-US', { weekday: 'short' })}</p>
               <h1 className="digital-time">{time.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}</h1>
             </div>
 
-            {/* 날씨 카드 부분만 교체 */}
             <div className="card weather-card updated-layout">
               <div className="weather-left">
                 <div className="location-row">
-                  <span className="location-pin">📍 충청남도 아산시</span> 
+                  <span className="location-pin">📍 충청남도 아산시</span>
                 </div>
                 <div className="sub-info-row">
-                  {/* 최저/최고 기온 및 미세먼지 */}
-                  최저 {weather.min_temp}° 최고 {weather.max_temp}° · 미세먼지 {weather.dust}
+                  최저 {weather.min_temp}°c 최고 {weather.max_temp}°c · 미세먼지 {weather.dust}
                 </div>
               </div>
               <div className="weather-right">
-                {/* 현재 기온 강조 */}
-                <span className="current-temp">{weather.current_temp}°</span>
+                <span className="condition-text">{conditionMap[weather.sky_condition] || '맑음'}</span>
+                <span className="current-temp">{weather.current_temp} °c</span>
               </div>
             </div>
 
-            {/* 기존 주식 카드 유지 */}
             <div className="card stock-card">
               <div className="stock-item"><span>KOSPI</span> <span>7,770</span> <span className="up">▲ 500</span></div>
               <div className="stock-item"><span>KOSDAQ</span> <span>2,200</span> <span className="up">▲ 300</span></div>
