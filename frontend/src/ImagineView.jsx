@@ -123,7 +123,7 @@ const ImagineView = () => {
             <svg viewBox="0 0 100 100" className="analog-clock">
               <circle cx="50" cy="50" r="48" className="clock-face" />
               {[...Array(12)].map((_, i) => (
-                <line key={i} x1="50" y1="6" x2="50" y2="12" transform={`rotate(${i * 30} 50 50)`} className="tick-mark" />
+                <line key={i} x1="50" y1="5" x2="50" y2="8" transform={`rotate(${i * 30} 50 50)`} className="tick-mark" />
               ))}
               <line x1="50" y1="50" x2="50" y2="22" transform={`rotate(${hourDeg} 50 50)`} className="hand hour-hand" />
               <line x1="50" y1="50" x2="50" y2="12" transform={`rotate(${minDeg} 50 50)`} className="hand minute-hand" />
@@ -145,12 +145,12 @@ const ImagineView = () => {
                   <span className="location-pin">📍 충청남도 아산시</span>
                 </div>
                 <div className="sub-info-row">
-                  {weather.min_temp}°c ~ {weather.max_temp}°c  ·  미세먼지 {weather.dust}
+                  {Math.round(Number(weather.min_temp)) || 0}°c ~ {Math.round(Number(weather.max_temp)) || 0}°c  ·  미세먼지 {weather.dust}
                 </div>
               </div>
               <div className="weather-right">
                 <span className="condition-text">{conditionMap[weather.sky_condition] || '맑음'}</span>
-                <span className="current-temp">{weather.current_temp} °c</span>
+                <span className="current-temp">{Math.round(Number(weather.current_temp)) || 0} °c</span>
               </div>
             </div>
 

@@ -31,11 +31,11 @@ body, html {
 
 .main-content {
   display: flex;
-  width: 92%; /* 좌우 여백 살짝 최적화 */
+  width: 97%; /* 좌우 여백 살짝 최적화 */
   height: 85%; /* 상하 여백 최적화 */
   align-items: center;
-  justify-content: space-between; /* 중앙 정렬 */
-  gap: 0vh; /* 해상도 비례 간격 */
+  justify-content: center; /* 중앙 정렬 */
+  gap: 8vh; /* 해상도 비례 간격 */
 }
 
 /* 1) 시계 섹션이 가로를 과점유하지 않도록: vh + vw 동시 제한 */
@@ -44,7 +44,7 @@ body, html {
   flex: 0 0 auto; /* 세로 기준 기본 크기 감소 */
   display: flex;
   justify-content: flex-start;
-  padding-left: 2vw;
+  padding-left: 1vw;
 }
 
 /* 2) 실제 시계 크기: 16:10에서 가로 제한(vw) 걸기 */
@@ -53,21 +53,30 @@ body, html {
   width: min(74vh, 47vw);  /* ★ 여기서 42vw가 16:10 압축을 막아줌 */
   height: min(74vh, 47vw);
   aspect-ratio: 1 / 1;
-
-  filter: drop-shadow(0 0 20px rgba(0,0,0,0.3));
 }
 
-.clock-face { fill: rgba(15, 15, 15, 0.4); }
-.tick-mark { stroke: #aaa; stroke-width: 1.5; }
-.hand { stroke: #f0f0f0; stroke-linecap: butt; }
+.clock-face {
+  fill: rgba(35, 35, 35, 0.2);
+}
+.tick-mark { 
+  stroke: #ccc; stroke-width: 1.5;
+  filter: drop-shadow(0.0vh 0.0vh 0.2vh rgba(0, 0, 0, 0.9));
+}
+.hand {
+  stroke: #f0f0f0; stroke-linecap: butt; 
+  filter: drop-shadow(0.2vh 0.3vh 0.15vh rgba(0, 0, 0, 0.7));
+}
 .hour-hand { stroke-width: 1.5; } /* 크기가 커진 만큼 두께 보정 */
 .minute-hand { stroke-width: 1.0; }
 .second-hand { stroke: #eea020; stroke-width: 0.5; }
-.center-dot { fill: #ccc; }
+.center-dot { 
+  fill: #ccc;
+  filter: drop-shadow(0.2vh 0.3vh 0.15vh rgba(0, 0, 0, 0.7));
+}
 
 /* 우측 패널: 남은 공간 활용 */
 .info-panel {
-  flex: 0 0 32vw;
+  flex: 0 0 42vw;
   display: flex;
   flex-direction: column;
 
@@ -90,8 +99,8 @@ body, html {
 
 .card {
   width: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(6px); /* 블러 강도 상향하여 가독성 확보 */
+  background: rgba(40, 40, 40, 0.4);
+  backdrop-filter: blur(2px); /* 블러 강도 상향하여 가독성 확보 */
   border-radius: 20px;
   padding: 2vh 2vw !important; /* 패딩 수식화 */
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -112,9 +121,10 @@ body, html {
 .date-display { 
   font-family: 'Gowun Batang', serif;
   font-size: clamp(1.2rem, 5vh, 2.5rem); /* 해상도 대응 폰트 수식 */
+  font-weight: 600;
   text-shadow: 0.1vw 0.1vw 0.2vw rgba(0,0,0,0.5);
   color: rgba(238, 238, 238, 0.9); 
-  margin-bottom: 1vh; 
+  margin-bottom: 0vh; 
 }
 .digital-time { 
   font-family: 'Gowun Batang', serif;
@@ -123,7 +133,7 @@ body, html {
   font-weight: 700; 
   text-shadow: 0.2vw 0.3vw 0.5vw rgba(0,0,0,0.6);
   color: #fff; 
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .weather-card { 
@@ -164,7 +174,7 @@ body, html {
 
 .weather-right {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: flex-end;
   gap: 2.5vw;
 }
