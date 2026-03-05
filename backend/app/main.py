@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import PlainTextResponse
 
 from .service.weather import WeatherService
+from .service.stock import StockService
 
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -20,7 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 사용자님의 기상청 API 허브 인증키 (authKey)
+# Weather Service
 WEATHER_KEY = os.getenv("WEATHER_KEY")
 weather_service = WeatherService(WEATHER_KEY)
 
@@ -33,6 +34,14 @@ async def read_weather():
 async def debug_weather():
     """사람이 읽기 좋은 형태로 기상청 Raw 데이터를 출력"""
     return weather_service.get_debug_text(nx=60, ny=110)
+
+
+# Stock Service
+stock_service = StockService()
+
+@app.get("/api/stock")
+async def read_stock():
+    return stock_service.get_stock_data()
 
 
 
