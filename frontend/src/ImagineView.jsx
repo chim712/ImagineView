@@ -37,6 +37,35 @@ const ImagineView = () => {
     return () => clearInterval(timer);
   }, []);
 
+
+  const [stock, setStock] = useState({
+  KOSPI: { price: '--', change: '0', is_up: true },
+  NASDAQ: { price: '--', change: '0', is_up: true }
+});
+
+const fetchStock = async () => {
+  try {
+    const response = await fetch('/api/stock');
+    const data = await response.json();
+    setStock(data);
+  } catch (error) {
+    console.error("주식 로드 실패:", error);
+  }
+};
+
+useEffect(() => {
+  fetchStock(); // 첫 로드
+  const timer = setInterval(() => {
+    const now = new Date();
+    // 매 정각 날씨와 함께 주식도 갱신
+    if (now.getMinutes() === 0 && now.getSeconds() === 0) {
+      fetchStock();
+    }
+  }, 1000);
+  return () => clearInterval(timer);
+}, []);
+
+
   /**
    * 배경 파일명을 결정하는 로직
    */
@@ -155,8 +184,20 @@ const ImagineView = () => {
             </div>
 
             <div className="card stock-card">
-              <div className="stock-item"><span>KOSPI</span> <span>7,770</span> <span className="up">▲ 500</span></div>
-              <div className="stock-item"><span>KOSDAQ</span> <span>2,200</span> <span className="up">▲ 300</span></div>
+              <div className="stock-item">
+                <span>KOSPI</span> 
+                <span>{stock.KOSPI.price}</span> 
+                <span className={stock.KOSPI.is_up ? "up" : "down"}>
+                  {stock.KOSPI.is_up ? "▲" : "▼"} {stock.KOSPI.change}
+                </span>
+              </div>
+              <div className="stock-item">
+                <span>NASDAQ</span> 
+                <span>{stock.NASDAQ.price}</span> 
+                <span className={stock.NASDAQ.is_up ? "up" : "down"}>
+                  {stock.NASDAQ.is_up ? "▲" : "▼"} {stock.NASDAQ.change}
+                </span>
+              </div>
             </div>
           </section>
         </main>

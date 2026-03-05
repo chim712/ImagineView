@@ -60,18 +60,18 @@ body, html {
 }
 .tick-mark { 
   stroke: #ccc; stroke-width: 1.5;
-  filter: drop-shadow(0.0vh 0.0vh 0.2vh rgba(0, 0, 0, 0.9));
+  filter: drop-shadow(0.0vh 0.0vh 0.3vh rgba(0, 0, 0, 0.95));
 }
 .hand {
-  stroke: #f0f0f0; stroke-linecap: butt; 
-  filter: drop-shadow(0.2vh 0.3vh 0.15vh rgba(0, 0, 0, 0.7));
+  stroke: #f7f7f7; stroke-linecap: butt; 
+  filter: drop-shadow(0.0vh 0.0vh 0.2vh rgba(0, 0, 0, 0.7));
 }
 .hour-hand { stroke-width: 1.5; } /* 크기가 커진 만큼 두께 보정 */
 .minute-hand { stroke-width: 1.0; }
-.second-hand { stroke: #eea020; stroke-width: 0.5; }
+.second-hand { stroke: #aa331a; stroke-width: 0.5; }
 .center-dot { 
   fill: #ccc;
-  filter: drop-shadow(0.2vh 0.3vh 0.15vh rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0.0vh 0.0vh 0.2vh rgba(0, 0, 0, 0.7));
 }
 
 /* 우측 패널: 남은 공간 활용 */
@@ -199,12 +199,60 @@ body, html {
 
 
 
-.stock-card { 
-  font-size: clamp(1.2rem, 2.5vh, 2rem); 
+/* =========================================
+   주식 카드 섹션 (수정된 정렬 레이아웃)
+   ========================================= */
+.stock-card {
+  display: flex;
+  flex-direction: column;
   color: #eee; 
 }
-.stock-item { display: flex; justify-content: space-between; margin: 0.8vh 0; color: #eee; }
-.up { color: #e74c3c; font-weight: bold; }
+
+.stock-item {
+  display: flex;
+  /* justify-content: space-between; <-- 이 부분을 제거합니다 */
+  align-items: center;
+  font-size: min(1.4rem, 3vw); /* 반응형 폰트 크기 유지 */
+  font-weight: 500;
+  gap: 4%; /* 항목 사이 간격을 비율로 설정하여 유연하게 대응 */
+}
+
+/* --- [핵심] 각 항목별 너비 및 정렬 설정 --- */
+
+/* 1. 종목명 (KOSPI, NASDAQ) */
+.stock-item > span:nth-child(1) {
+  flex: 0 0 25%; /* 너비 고정 (약 25%) */
+  text-align: left; /* 좌측 정렬 */
+}
+
+/* 2. 지수 (현재가) */
+.stock-item > span:nth-child(2) {
+  flex: 1 1 40%; /* 남은 공간을 유연하게 차지하되 기준점은 40% */
+  text-align: right; /* 우측 정렬 */
+  
+  /* [꿀팁] 숫자의 너비를 일정하게 만들어 소수점 정렬 효과를 줍니다 */
+  font-variant-numeric: tabular-nums; 
+  letter-spacing: 0; /* 숫자 간격은 좁게 유지 */
+}
+
+/* 3. 등락 (화살표 + 변동폭) */
+.stock-item > span:nth-child(3) {
+  flex: 0 0 35%; /* 천 단위 등락을 고려해 넉넉한 너비 할당 (약 35%) */
+  text-align: right; /* 우측 정렬 */
+  white-space: nowrap; /* 숫자가 길어져도 줄바꿈 방지 */
+  font-weight: 700; /* 등락은 조금 더 강조 */
+}
+
+/* 상승/하락 색상 (기존 유지) */
+.up {
+  color: #ff7777; /* 더 선명한 빨강 */
+  text-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+}
+
+.down {
+  color: #77aaff; /* 더 선명한 파랑 */
+  text-shadow: 0 0 10px rgba(77, 121, 255, 0.3);
+}
 
 /* 폰트 적용 */
 .weather-card,
