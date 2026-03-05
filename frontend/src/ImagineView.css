@@ -212,7 +212,7 @@ body, html {
   display: flex;
   /* justify-content: space-between; <-- 이 부분을 제거합니다 */
   align-items: center;
-  font-size: min(1.4rem, 3vw); /* 반응형 폰트 크기 유지 */
+  font-size: min(1.1rem, 2vw); /* 반응형 폰트 크기 유지 */
   font-weight: 500;
   gap: 4%; /* 항목 사이 간격을 비율로 설정하여 유연하게 대응 */
 }
