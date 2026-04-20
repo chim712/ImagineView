@@ -56,3 +56,7 @@ app.mount("/assets", StaticFiles(directory=os.path.join(FRONTEND_DIST, "assets")
 @app.get("/")
 async def serve_react():
     return FileResponse(os.path.join(FRONTEND_DIST, "index.html"))
+
+@app.get("/exam")
+async def serve_react():
+    return FileResponse(os.path.join(FRONTEND_DIST, "ExamBoard_Full.html"))
