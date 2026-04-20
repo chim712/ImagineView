@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ImagineView - 시험 감독 대시보드</title>
+<style>
+    :root {
+        --bg-color: #FFFFFF;
+        --text-color: #000000;
+        font-size: 1.1vh; 
+    }
+
+    body, html {
+        margin: 0; padding: 0;
+        height: 100%; width: 100%;
+        overflow: hidden;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .dashboard {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+    }
+
+    /* === 좌측: 판서 영역 === */
+    .memo-section {
+        flex: 1.2;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* 상단부터 배치하여 여백 조절 */
+        align-items: center;
+        padding-top: 3rem; /* 연도/학기가 너무 붙지 않도록 상단 여백 추가 */
+        box-sizing: border-box;
+        border-right: 0.1rem solid #EEE;
+    }
+
+    .chalkboard-container {
+        width: 100%;
+        text-align: center;
+    }
+
+    .board-input {
+        width: 100%;
+        border: none;
+        background: transparent;
+        text-align: center;
+        outline: none;
+        margin-bottom: 1.5rem;
+        display: block;
+        color: var(--text-color);
+        font-family: inherit;
+    }
+
+    .line-1 { font-size: 2.2rem; color: #666; margin-bottom: 0.5rem; } /* 학년도 라인 아래 여백 */
+    .line-2 { font-size: 5.5rem; font-weight: 900; margin-bottom: 0.2rem; }
+    .line-3 { font-size: 2.5rem; font-weight: bold; margin-bottom: 3rem; }
+
+    .line-4 { font-size: 5rem; font-weight: 800;margin-bottom: 0.2rem; }
+    .line-5 { font-size: 3.5rem; margin-bottom: 5rem; color: #444; }
+
+    .status-container {
+        margin-bottom: 5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.1rem;
+    }
+    .status-row { font-size: 3rem; font-weight: bold; }
+    .status-input {
+        width: 15rem;
+        border: none;
+        border-bottom: 0.4rem solid #000;
+        background: transparent;
+        text-align: center;
+        font-size: 3.5rem;
+        font-weight: 900;
+        outline: none;
+    }
+
+    .notice-area {
+        width: 100%;
+        height: 25rem;
+        font-size: 3.2rem;
+        line-height: 1.8;
+        text-align: center;
+        border: none;
+        outline: none;
+        background: transparent;
+        resize: none;
+        font-family: inherit;
+    }
+
+    /* === 우측: 시계 영역 (교탁 가림 방지 위해 상단 이동) === */
+    .clock-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* 중앙 대신 상단 정렬 */
+        align-items: center;
+        padding-top: 4vh; /* 위에서 20% 정도 내려오도록 설정 (상단 이동 효과) */
+    }
+
+    .digital-clock { text-align: center; margin-bottom: 6rem; }
+    .date-display { font-size: 3.5rem; margin-bottom: 1.5rem; }
+    .time-display { font-size: 10rem; font-weight: bold; letter-spacing: -0.2rem; }
+
+    /* 아날로그 시계: 크기 10% 확대 및 반응형 */
+    .analog-clock-container {
+        width: 50vh; /* 기존 45vh에서 약 10% 확대 */
+        height: 50vh;
+        position: relative;
+    }
+
+    .hand { 
+        position: absolute; bottom: 50%; left: 50%; 
+        transform-origin: bottom; background-color: #222; 
+        border-radius: 1rem; transform: translateX(-50%); 
+    }
+    .hour-hand { width: 1.3vh; height: 25%; z-index: 3; }
+    .minute-hand { width: 0.9vh; height: 38%; z-index: 2; }
+    .second-hand { width: 0.45vh; height: 42%; background-color: #E74C3C; z-index: 1; }
+    .clock-center { 
+        width: 2.2vh; height: 2.2vh; background-color: #222; 
+        position: absolute; top: 50%; left: 50%; 
+        transform: translate(-50%, -50%); border-radius: 50%; z-index: 4; 
+    }
+
+    .marking { position: absolute; width: 0.7vh; height: 100%; left: 50%; margin-left: -0.35vh; top: 0; }
+    .marking::after { 
+        content: ""; display: block; 
+        width: 100%; height: 2.5vh; 
+        background: #222; 
+    }
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+    <section class="memo-section">
+        <div class="chalkboard-container">
+            <input type="text" id="l1" class="board-input line-1" placeholder="연도 / 학기">
+            <input type="text" id="l2" class="board-input line-2" placeholder="과목명">
+            <input type="text" id="l3" class="board-input line-3" placeholder="분반 / 학수번호">
+
+            <input type="text" id="l4" class="board-input line-4" placeholder="00:00 ~ 00:00 (00분)">
+            <input type="text" id="l5" class="board-input line-5" placeholder="중도 퇴실 시간 : 00:00 이후">
+
+            <textarea id="notice" class="notice-area" placeholder="[ 여기에 공지사항을 입력하세요 ]"></textarea>
+        </div>
+    </section>
+
+    <section class="clock-section">
+        <div class="digital-clock">
+            <div id="date-display" class="date-display"></div>
+            <div id="time-display" class="time-display"></div>
+        </div>
+        <div class="analog-clock-container">
+            <div class="analog-clock-face" id="face">
+                <div class="clock-center"></div>
+                <div id="hour-hand" class="hand hour-hand"></div>
+                <div id="minute-hand" class="hand minute-hand"></div>
+                <div id="second-hand" class="hand second-hand"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function updateClocks() {
+        const now = new Date();
+        const d = now.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
+        document.getElementById('date-display').textContent = d;
+        document.getElementById('time-display').textContent = now.toTimeString().split(' ')[0];
+
+        const s = now.getSeconds() / 60, m = (s + now.getMinutes()) / 60, h = (m + now.getHours()) / 12;
+        document.getElementById('second-hand').style.transform = `translateX(-50%) rotate(${s * 360}deg)`;
+        document.getElementById('minute-hand').style.transform = `translateX(-50%) rotate(${min_ratio(now)}deg)`;
+        document.getElementById('hour-hand').style.transform = `translateX(-50%) rotate(${hr_ratio(now)}deg)`;
+    }
+
+    function min_ratio(now) { return (now.getMinutes() + now.getSeconds()/60) * 6; }
+    function hr_ratio(now) { return (now.getHours() % 12 + now.getMinutes()/60) * 30; }
+
+    for (let i = 1; i <= 12; i++) {
+        const m = document.createElement('div');
+        m.className = 'marking'; m.style.transform = `rotate(${i * 30}deg)`;
+        document.getElementById('face').appendChild(m);
+    }
+
+    setInterval(updateClocks, 1000); updateClocks();
+
+    // 1. URL 파라미터 확인 (?clear=true 가 붙어있으면 초기화)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('clear') === 'true') {
+        ids.forEach(id => localStorage.removeItem('exam_v4_' + id));
+        // 초기화 후 깔끔한 URL로 이동 (선택 사항)
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // 2. 데이터 로드 및 저장 (기존 로직 유지)
+    const ids = ['l1','l2','l3','l4','l5','l6','l7','l8','notice'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        el.value = localStorage.getItem('exam_v4_'+id) || '';
+
+        el.addEventListener('input', () => {
+            localStorage.setItem('exam_v4_'+id, el.value);
+        });
+    });
+</script>
+
+</body>
+</html>
