@@ -58,5 +58,5 @@ async def serve_react():
     return FileResponse(os.path.join(FRONTEND_DIST, "index.html"))
 
 @app.get("/exam")
-async def serve_react():
+async def serve_examPage():
     return FileResponse(os.path.join(FRONTEND_DIST, "ExamBoard_Full.html"))
